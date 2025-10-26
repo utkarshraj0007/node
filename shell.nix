@@ -11,7 +11,6 @@
       libuv
       nghttp3
       ngtcp2
-      openssl
       simdjson
       simdutf
       sqlite
@@ -29,6 +28,13 @@
           hash = "sha256-RG87Qifjpl7HTP9ac2JwHj2XAbDlFgOpAnpZX3ET6gU=";
         })
       ];
+    };
+    openssl = pkgs.openssl.overrideAttrs {
+      version = "3.5.4";
+      src = pkgs.fetchurl {
+        url = builtins.replaceStrings [ pkgs.openssl.version ] [ "3.5.4" ] pkgs.openssl.src.url;
+        hash = "sha256-lnMR+ElVMWlpvbHY1LmDcY70IzhjnGIexMNP3e81Xpk=";
+      };
     };
   },
   ccache ? pkgs.ccache,
