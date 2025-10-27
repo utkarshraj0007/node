@@ -29,13 +29,18 @@
         })
       ];
     };
-    openssl = pkgs.openssl.overrideAttrs {
+    openssl = pkgs.openssl.overrideAttrs (old: {
       version = "3.5.4";
       src = pkgs.fetchurl {
-        url = builtins.replaceStrings [ pkgs.openssl.version ] [ "3.5.4" ] pkgs.openssl.src.url;
+        url = builtins.replaceStrings [ old.version ] [ "3.5.4" ] old.src.url;
         hash = "sha256-lnMR+ElVMWlpvbHY1LmDcY70IzhjnGIexMNP3e81Xpk=";
       };
-    };
+      doCheck = !pkgs.stdenv.buildPlatform.isDarwin;
+      configureFlags = (old.configureFlags or []) ++ [
+        "no-docs"
+      ] ++ pkgs.lib.optional pkgs.stdenv.buildPlatform.isDarwin "no-tests";
+      outputs = [ "bin" "out" "dev" ];
+    });
   },
   ccache ? pkgs.ccache,
   ninja ? pkgs.ninja,
